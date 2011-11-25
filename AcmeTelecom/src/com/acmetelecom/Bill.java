@@ -18,11 +18,13 @@ public class Bill {
 	}
 	
 	public void printBill(Printer printer) {
-        printer.printHeading(customer.getFullName(), customer.getPhoneNumber(), customer.getPricePlan());
-        for (BillingSystem.LineItem call : calls) {
-            printer.printItem(call.date(), call.callee(), call.durationMinutes(), MoneyFormatter.penceToPounds(call.cost()));
-        }
-        printer.printTotal(totalBill);
+		printer.printHeading(customer.getFullName(), customer.getPhoneNumber(),
+				customer.getPricePlan());
+		for (BillingSystem.LineItem call : calls) {
+			printer.printItem(call.date(), call.callee(), call.durationMinutes(),
+					MoneyFormatter.penceToPounds(call.cost()));
+		}
+		printer.printTotal(totalBill);
 	}
 
 }

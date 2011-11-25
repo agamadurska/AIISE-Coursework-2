@@ -4,32 +4,33 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Call {
-    private CallEvent start;
-    private CallEvent end;
 
-    public Call(CallEvent start, CallEvent end) {
-        this.start = start;
-        this.end = end;
-    }
+	private CallEvent start;
+	private CallEvent end;
 
-    public PhoneEntity callee() {
-        return start.getCallee();
-    }
+	public Call(CallEvent start, CallEvent end) {
+		this.start = start;
+		this.end = end;
+	}
 
-    public int durationSeconds() {
-        return (int) (((end.time() - start.time()) / 1000));
-    }
+	public PhoneEntity callee() {
+		return start.getCallee();
+	}
 
-    public String date() {
-        return SimpleDateFormat.getInstance().format(new Date(start.time()));
-    }
+  public int durationSeconds() {
+  	return (int) (((end.time() - start.time()) / 1000));
+  }
 
-    public Date startTime() {
-        return new Date(start.time());
-    }
+  public String date() {
+  	return SimpleDateFormat.getInstance().format(new Date(start.time()));
+  }
 
-    public Date endTime() {
-        return new Date(end.time());
-    }
+  public Date startTime() {
+  	return new Date(start.time());
+  }
+
+  public Date endTime() {
+      return new Date(end.time());
+  }
 
 }
