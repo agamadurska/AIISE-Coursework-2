@@ -1,5 +1,9 @@
 package com.acmetelecom;
 
+/**
+ * Bosses don't use singletons.
+ * Bosses don't use hardcoded values.
+ */
 class HtmlPrinter implements Printer {
 
     private static Printer instance = new HtmlPrinter();

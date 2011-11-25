@@ -4,6 +4,9 @@ import com.acmetelecom.customer.Customer;
 
 import java.util.List;
 
+/**
+ * This class dispatches a billing report to the HmtlPrinter.
+ */
 public class BillGenerator {
 
     public void send(Customer customer, List<BillingSystem.LineItem> calls, String totalBill) {

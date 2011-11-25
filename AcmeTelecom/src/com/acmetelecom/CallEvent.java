@@ -5,6 +5,7 @@ public abstract class CallEvent {
     private String callee;
     private long time;
 
+    // Bosses asked what is the unit for timeStamp????????
     public CallEvent(String caller, String callee, long timeStamp) {
         this.caller = caller;
         this.callee = callee;

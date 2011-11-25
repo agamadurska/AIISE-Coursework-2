@@ -11,6 +11,7 @@ import java.util.*;
 
 public class BillingSystem {
 
+	// Stores all the call start and end events.
     private List<CallEvent> callLog = new ArrayList<CallEvent>();
 
     public void callInitiated(String caller, String callee) {
@@ -39,6 +40,7 @@ public class BillingSystem {
 
         List<Call> calls = new ArrayList<Call>();
 
+        // This assumes that only an end event can follow a start event.
         CallEvent start = null;
         for (CallEvent event : customerEvents) {
             if (event instanceof CallStart) {
@@ -75,6 +77,9 @@ public class BillingSystem {
         new BillGenerator().send(customer, items, MoneyFormatter.penceToPounds(totalBill));
     }
 
+    /**
+     * State class to represent the cost of an call.
+     */
     static class LineItem {
         private Call call;
         private BigDecimal callCost;
