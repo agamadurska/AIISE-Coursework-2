@@ -27,8 +27,8 @@ class HtmlPrinter implements Printer {
         beginTable();
     }
 
-    public void printItem(String time, String callee, String duration, String cost) {
-        printStream.println(tr(td(time) + td(callee) + td(duration) + td(cost)));
+    public void printItem(String time, PhoneEntity callee, String duration, String cost) {
+        printStream.println(tr(td(time) + td(callee.getPhoneNumber()) + td(duration) + td(cost)));
     }
 
     public void printTotal(String total) {

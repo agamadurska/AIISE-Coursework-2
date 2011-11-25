@@ -14,7 +14,7 @@ public class BillGenerator {
 	public BillGenerator(Printer printer) {
 		this.printer = printer;
 	}
-	
+
     public void send(Customer customer, List<BillingSystem.LineItem> calls, String totalBill) {
         printer.printHeading(customer.getFullName(), customer.getPhoneNumber(), customer.getPricePlan());
         for (BillingSystem.LineItem call : calls) {

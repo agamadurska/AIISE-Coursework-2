@@ -9,8 +9,8 @@ import org.junit.Test;
 
 public class TestCall extends TestCase {
 
-	public static final String caller1 = "08989999";
-	public static final String caller2 = "42";
+	public static final PhoneEntity caller1 = new PhoneEntity("08989999");
+	public static final PhoneEntity caller2 = new PhoneEntity("42");
 	
 	
 	@Before

@@ -2,7 +2,7 @@ package com.acmetelecom;
 
 public class CallStart extends CallEvent {
 	
-    public CallStart(String caller, String callee) {
+    public CallStart(PhoneEntity caller, PhoneEntity callee) {
         super(caller, callee, System.currentTimeMillis());
     }
     
@@ -13,7 +13,8 @@ public class CallStart extends CallEvent {
      * @param callee	the received of the call
      * @param endTimeStamp the timestamp when the call started
      */
-    public CallStart(String caller, String callee, long startTimeStamp) {
+    public CallStart(PhoneEntity caller, PhoneEntity callee,
+    		long startTimeStamp) {
     	super(caller, callee, startTimeStamp);
     }
     

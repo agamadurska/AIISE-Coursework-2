@@ -17,18 +17,9 @@ public class TestBillingSystem {
 	}
 
 	@Test
-	public void testCallInitiated() {
-		
-		// fail("Not yet implemented");
-	}
-
-	@Test
-	public void testCallCompleted() {
-		// fail("Not yet implemented");
-	}
-
-	@Test
 	public void testCreateCustomerBills() {
+		BillingSystem billingSystem = new BillingSystem();
+		
 		// fail("Not yet implemented");
 	}
 
