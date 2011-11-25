@@ -1,43 +1,55 @@
 package com.acmetelecom;
 
+import java.io.PrintStream;
+
 /**
  * Bosses don't use singletons.
  * Bosses don't use hardcoded values.
+ * Bosses use dependency injection.
+ * Bosses put first the public classes then the private ones.
  */
 class HtmlPrinter implements Printer {
 
-    private static Printer instance = new HtmlPrinter();
-
-    private HtmlPrinter() {
-    }
-
-    public static Printer getInstance() {
-        return instance;
+	private final PrintStream printStream;
+	
+	/**
+	 * Create an HtmlPrinter.
+	 * 
+	 * @param printStream the stream to print to
+	 */
+    public HtmlPrinter(PrintStream printStream) {
+    	this.printStream = printStream;
     }
 
     public void printHeading(String name, String phoneNumber, String pricePlan) {
         beginHtml();
-        System.out.println(h2(name + "/" + phoneNumber + " - " + "Price Plan: " + pricePlan));
+        printStream.println(h2(name + "/" + phoneNumber + " - " + "Price Plan: " + pricePlan));
         beginTable();
     }
 
+    public void printItem(String time, String callee, String duration, String cost) {
+        printStream.println(tr(td(time) + td(callee) + td(duration) + td(cost)));
+    }
+
+    public void printTotal(String total) {
+        endTable();
+        printStream.println(h2("Total: " + total));
+        endHtml();
+    }
+
     private void beginTable() {
-        System.out.println("<table border=\"1\">");
-        System.out.println(tr(th("Time") + th("Number") + th("Duration") + th("Cost")));
+        printStream.println("<table border=\"1\">");
+        printStream.println(tr(th("Time") + th("Number") + th("Duration") + th("Cost")));
     }
 
     private void endTable() {
-        System.out.println("</table>");
+        printStream.println("</table>");
     }
 
     private String h2(String text) {
         return "<h2>" + text + "</h2>";
     }
-
-    public void printItem(String time, String callee, String duration, String cost) {
-        System.out.println(tr(td(time) + td(callee) + td(duration) + td(cost)));
-    }
-
+    
     private String tr(String text) {
         return "<tr>" + text + "</tr>";
     }
@@ -50,23 +62,17 @@ class HtmlPrinter implements Printer {
         return "<td>" + text + "</td>";
     }
 
-    public void printTotal(String total) {
-        endTable();
-        System.out.println(h2("Total: " + total));
-        endHtml();
-    }
-
     private void beginHtml() {
-        System.out.println("<html>");
-        System.out.println("<head></head>");
-        System.out.println("<body>");
-        System.out.println("<h1>");
-        System.out.println("Acme Telecom");
-        System.out.println("</h1>");
+        printStream.println("<html>");
+        printStream.println("<head></head>");
+        printStream.println("<body>");
+        printStream.println("<h1>");
+        printStream.println("Acme Telecom");
+        printStream.println("</h1>");
     }
 
     private void endHtml() {
-        System.out.println("</body>");
-        System.out.println("</html>");
+        printStream.println("</body>");
+        printStream.println("</html>");
     }
 }
