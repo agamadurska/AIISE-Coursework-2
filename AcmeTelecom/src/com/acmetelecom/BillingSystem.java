@@ -30,14 +30,30 @@ public class BillingSystem {
         callLog.clear();
     }
 
-    private void createBillFor(Customer customer) {
+    /**
+     * Create bills for all the customers.
+     * NOTE: This method should only be used for testing
+     * @param customers a list containing all the customers.
+     */
+    protected void createCustomerBills(List<Customer> customers) {
+        for (Customer customer : customers) {
+            createBillFor(customer);
+        }
+        callLog.clear();    	
+    }
+    
+    protected List<CallEvent> getCustomerCallEvents(Customer customer) {
         List<CallEvent> customerEvents = new ArrayList<CallEvent>();
         for (CallEvent callEvent : callLog) {
             if (callEvent.getCaller().equals(customer.getPhoneNumber())) {
                 customerEvents.add(callEvent);
             }
         }
-
+        return customerEvents;
+    }
+     
+    protected List<Call> getCustomerCalls(Customer customer) {
+    	List<CallEvent> customerEvents = getCustomerCallEvents(customer);
         List<Call> calls = new ArrayList<Call>();
 
         // This assumes that only an end event can follow a start event.
@@ -51,7 +67,11 @@ public class BillingSystem {
                 start = null;
             }
         }
-
+        return calls;
+    }
+    
+    private void createBillFor(Customer customer) {
+    	List<Call> calls = getCustomerCalls(customer);
         BigDecimal totalBill = new BigDecimal(0);
         List<LineItem> items = new ArrayList<LineItem>();
 
@@ -74,8 +94,9 @@ public class BillingSystem {
             items.add(new LineItem(call, callCost));
         }
 
-        new BillGenerator(new HtmlPrinter(System.out))
-        	.send(customer, items, MoneyFormatter.penceToPounds(totalBill));
+        Bill bill = new Bill(customer, items,
+        		MoneyFormatter.penceToPounds(totalBill));
+        bill.printBill(new HtmlPrinter(System.out));
     }
 
     /**
