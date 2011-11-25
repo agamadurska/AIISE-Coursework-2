@@ -44,12 +44,12 @@ public class TestHtmlPrinter {
 	public void testPrintItem() {
 		ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream();
 		HtmlPrinter htmlPrinter = new HtmlPrinter(new PrintStream(byteOutputStream));
-		htmlPrinter.printItem("09:11:55", "John Doe", "3:07", "$0.23");
+		htmlPrinter.printItem("09:11:55", new PhoneEntity("666"), "3:07", "$0.23");
 		System.out.println(byteOutputStream.toString());
 
         String actual = getOutput(byteOutputStream);
 
-        String expected = "<tr><td>09:11:55</td><td>John Doe</td><td>3:07</td><td>$0.23</td></tr>\n";
+        String expected = "<tr><td>09:11:55</td><td>666</td><td>3:07</td><td>$0.23</td></tr>\n";
 
         assertEquals(expected, actual);
 	}
