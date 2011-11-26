@@ -12,18 +12,19 @@ public class Runner {
 		Phone phone2 = new Phone("447766814143");
 		Phone phone3 = new Phone("447777765432");
 		Phone phone4 = new Phone("447711111111");
-		BillingSystem billingSystem = new BillingSystem(
+		CallsLogger callsLogger = new CallsLogger();
+		callsLogger.callInitiated(phone1, phone2);
+		sleepSeconds(2);
+		callsLogger.callCompleted(phone1, phone2);
+		callsLogger.callInitiated(phone1, phone4);
+		sleepSeconds(3);
+		callsLogger.callCompleted(phone1, phone4);
+		callsLogger.callInitiated(phone3, phone4);
+		sleepSeconds(6);
+		callsLogger.callCompleted(phone3, phone4);
+		BillingSystem billingSystem = new BillingSystem(callsLogger,
 				CentralCustomerDatabase.getInstance(),
 				CentralTariffDatabase.getInstance());
-		billingSystem.callInitiated(phone1, phone2);
-		sleepSeconds(2);
-		billingSystem.callCompleted(phone1, phone2);
-		billingSystem.callInitiated(phone1, phone4);
-		sleepSeconds(3);
-		billingSystem.callCompleted(phone1, phone4);
-		billingSystem.callInitiated(phone3, phone4);
-		sleepSeconds(6);
-		billingSystem.callCompleted(phone3, phone4);
 		billingSystem.createCustomerBills();
 	}
 	
