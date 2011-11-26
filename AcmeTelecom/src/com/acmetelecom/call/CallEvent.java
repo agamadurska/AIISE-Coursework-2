@@ -4,8 +4,8 @@ import com.acmetelecom.entity.PhoneEntity;
 
 public abstract class CallEvent {
 
-	private PhoneEntity caller;
-	private PhoneEntity callee;
+	private final PhoneEntity caller;
+	private final PhoneEntity callee;
 	private long time;
 
 	// Bosses asked what is the unit for timeStamp????????
@@ -27,4 +27,22 @@ public abstract class CallEvent {
   	return time;
   }
 
+  @Override
+  public boolean equals(Object object) {
+  	if (object instanceof CallEvent) {
+  		CallEvent callEvent = (CallEvent)object;
+  		return caller.equals(callEvent.getCaller()) &&
+  				callee.equals(callEvent.getCallee()) &&
+  				time == callEvent.time();
+  	} else {
+  		return false;
+  	}
+  }
+  
+  @Override
+  public int hashCode() {
+  	return (int)(((caller.hashCode() * 17) % 98332137 + callee.hashCode()) *
+  			17 % 98332137 + time) % 98332137;
+  }
+  
 }

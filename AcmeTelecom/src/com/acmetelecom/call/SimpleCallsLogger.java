@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.acmetelecom.customer.Customer;
+import com.acmetelecom.entity.Phone;
 import com.acmetelecom.entity.PhoneEntity;
 
 public class SimpleCallsLogger implements CallsLogger {
@@ -30,7 +31,7 @@ public class SimpleCallsLogger implements CallsLogger {
 	public List<CallEvent> getCustomerCallEvents(Customer customer) {
 		List<CallEvent> customerEvents = new ArrayList<CallEvent>();
 		for (CallEvent callEvent : callLog) {
-			if (callEvent.getCaller().equals(customer.getPhoneNumber())) {
+			if (callEvent.getCaller().equals(new Phone(customer.getPhoneNumber()))) {
 				customerEvents.add(callEvent);
 			}
 		}

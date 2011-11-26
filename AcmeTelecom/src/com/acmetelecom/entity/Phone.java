@@ -20,10 +20,17 @@ public class Phone implements PhoneEntity {
 		this.phoneNumber = phoneNumber;
 	}
 	
-	public boolean equals(Phone phoneEntity) {
-		return phoneNumber.equals(phoneEntity.getPhoneNumber());
+	@Override
+	public boolean equals(Object object) {
+		if (object instanceof PhoneEntity) {
+			return this.phoneNumber.equals(
+					((PhoneEntity)object).getPhoneNumber());
+		} else {
+			return false;
+		}
 	}
 	
+	@Override
 	public int hashCode() {
 		return phoneNumber.hashCode();
 	}
