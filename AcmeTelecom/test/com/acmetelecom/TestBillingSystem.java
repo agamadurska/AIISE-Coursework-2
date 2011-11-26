@@ -16,7 +16,6 @@ public class TestBillingSystem {
 
 	@Test
 	public void testCreateCustomerBills() {
-		BillingSystem billingSystem = new BillingSystem();
 		
 		// fail("Not yet implemented");
 	}

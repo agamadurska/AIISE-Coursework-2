@@ -9,18 +9,27 @@ import com.acmetelecom.call.Call;
 import com.acmetelecom.call.CallEnd;
 import com.acmetelecom.call.CallEvent;
 import com.acmetelecom.call.CallStart;
-import com.acmetelecom.customer.CentralCustomerDatabase;
-import com.acmetelecom.customer.CentralTariffDatabase;
 import com.acmetelecom.customer.Customer;
+import com.acmetelecom.customer.CustomerDatabase;
 import com.acmetelecom.customer.Tariff;
+import com.acmetelecom.customer.TariffLibrary;
 import com.acmetelecom.entity.PhoneEntity;
 import com.acmetelecom.output.HtmlPrinter;
 
 public class BillingSystem {
-
+	
 	// Stores all the call start and end events.
-	private List<CallEvent> callLog = new ArrayList<CallEvent>();
-
+	private final List<CallEvent> callLog;
+	private final CustomerDatabase customerDatabase;
+	private final TariffLibrary tariffLibrary;
+	
+	public BillingSystem(CustomerDatabase customerDatabase,
+			TariffLibrary tariffLibrary) {
+		this.callLog = new ArrayList<CallEvent>();
+		this.customerDatabase = customerDatabase;
+		this.tariffLibrary = tariffLibrary;
+	}
+	
 	public void callInitiated(PhoneEntity caller, PhoneEntity callee) {
 		callLog.add(new CallStart(caller, callee));
 	}
@@ -30,8 +39,7 @@ public class BillingSystem {
 	}
 
 	public void createCustomerBills() {
-		List<Customer> customers = CentralCustomerDatabase.getInstance()
-				.getCustomers();
+		List<Customer> customers = customerDatabase.getCustomers();
 		for (Customer customer : customers) {
 			createBillFor(customer);
 		}
@@ -69,8 +77,7 @@ public class BillingSystem {
 
 		for (Call call : calls) {
 
-			Tariff tariff = CentralTariffDatabase.getInstance()
-					.tarriffFor(customer);
+			Tariff tariff = tariffLibrary.tarriffFor(customer);
 
 			BigDecimal cost;
 
