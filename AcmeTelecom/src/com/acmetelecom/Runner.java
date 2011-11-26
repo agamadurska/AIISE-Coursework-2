@@ -1,5 +1,6 @@
 package com.acmetelecom;
 
+import com.acmetelecom.call.SimpleCallsLogger;
 import com.acmetelecom.customer.CentralCustomerDatabase;
 import com.acmetelecom.customer.CentralTariffDatabase;
 import com.acmetelecom.entity.Phone;
@@ -12,7 +13,7 @@ public class Runner {
 		Phone phone2 = new Phone("447766814143");
 		Phone phone3 = new Phone("447777765432");
 		Phone phone4 = new Phone("447711111111");
-		CallsLogger callsLogger = new CallsLogger();
+		SimpleCallsLogger callsLogger = new SimpleCallsLogger();
 		callsLogger.callInitiated(phone1, phone2);
 		sleepSeconds(2);
 		callsLogger.callCompleted(phone1, phone2);

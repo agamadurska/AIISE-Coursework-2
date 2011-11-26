@@ -1,20 +1,17 @@
-package com.acmetelecom;
+package com.acmetelecom.call;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.acmetelecom.call.CallEnd;
-import com.acmetelecom.call.CallEvent;
-import com.acmetelecom.call.CallStart;
 import com.acmetelecom.customer.Customer;
 import com.acmetelecom.entity.PhoneEntity;
 
-public class CallsLogger {
+public class SimpleCallsLogger implements CallsLogger {
 
 	// Stores all the call start and end events.
 	private final List<CallEvent> callLog;
 	
-	public CallsLogger() {
+	public SimpleCallsLogger() {
 		this.callLog = new ArrayList<CallEvent>();
 	}
 	
