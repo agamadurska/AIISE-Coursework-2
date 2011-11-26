@@ -1,4 +1,4 @@
-package com.acmetelecom;
+package com.acmetelecom.output;
 import static org.junit.Assert.assertEquals;
 
 import java.io.ByteArrayOutputStream;
