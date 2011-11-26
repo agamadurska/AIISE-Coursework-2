@@ -1,5 +1,6 @@
 package com.acmetelecom.call;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -9,10 +10,18 @@ public class Call {
 
 	private CallEvent start;
 	private CallEvent end;
+	private BigDecimal callCost;
 
 	public Call(CallEvent start, CallEvent end) {
 		this.start = start;
 		this.end = end;
+		this.callCost = new BigDecimal(0);
+	}
+	
+	public Call(CallEvent start, CallEvent end, BigDecimal callCost) {
+		this.start = start;
+		this.end = end;
+		this.callCost = callCost;		
 	}
 
 	public PhoneEntity callee() {
@@ -32,7 +41,20 @@ public class Call {
   }
 
   public Date endTime() {
-      return new Date(end.time());
+    return new Date(end.time());
   }
+  
+  public void setCallCost(BigDecimal callCost) {
+  	this.callCost = callCost;
+  }
+  
+	public String durationMinutes() {
+		int duration = durationSeconds();
+		return "" + duration / 60 + ":" + String.format("%02d", duration % 60);
+	}
+
+	public BigDecimal cost() {
+		return callCost;
+	}
 
 }

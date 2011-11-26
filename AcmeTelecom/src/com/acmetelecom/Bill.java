@@ -2,16 +2,17 @@ package com.acmetelecom;
 
 import java.util.List;
 
+import com.acmetelecom.call.Call;
 import com.acmetelecom.customer.Customer;
 import com.acmetelecom.output.Printer;
 
 public class Bill {
 	
 	private final Customer customer;
-	private final List<BillingSystem.LineItem> calls;
+	private final List<Call> calls;
 	private final String totalBill;
 	
-	public Bill(Customer customer, List<BillingSystem.LineItem> calls,
+	public Bill(Customer customer, List<Call> calls,
 			String totalBill) {
 		this.customer = customer;
 		this.calls = calls;
@@ -21,7 +22,7 @@ public class Bill {
 	public void printBill(Printer printer) {
 		printer.printHeading(customer.getFullName(), customer.getPhoneNumber(),
 				customer.getPricePlan());
-		for (BillingSystem.LineItem call : calls) {
+		for (Call call : calls) {
 			printer.printItem(call.date(), call.callee(), call.durationMinutes(),
 					MoneyFormatter.penceToPounds(call.cost()));
 		}
