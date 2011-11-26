@@ -12,6 +12,7 @@ import com.acmetelecom.call.CallStart;
 import com.acmetelecom.customer.Customer;
 import com.acmetelecom.customer.Tariff;
 import com.acmetelecom.customer.TariffLibrary;
+import com.acmetelecom.output.Printer;
 
 public class CustomerBill {
 
@@ -66,8 +67,7 @@ public class CustomerBill {
 	
 	protected BigDecimal charge() {
 		BigDecimal totalBill = new BigDecimal(0);
-		List <Call> calls = getCustomerCalls();
-		for (Call call : calls) {
+		for (Call call : getCustomerCalls()) {
 			BigDecimal cost = computeCost(call);
 			cost = cost.setScale(0, RoundingMode.HALF_UP);
 			BigDecimal callCost = cost;
@@ -75,6 +75,17 @@ public class CustomerBill {
 			call.setCallCost(callCost);
 		}
 		return totalBill;
+	}
+	
+	public void printBill(Printer printer) {
+		BigDecimal totalBill = charge();
+		printer.printHeading(customer.getFullName(), customer.getPhoneNumber(),
+				customer.getPricePlan());
+		for (Call call : getCustomerCalls()) {
+			printer.printItem(call.date(), call.callee(), call.durationMinutes(),
+					MoneyFormatter.penceToPounds(call.cost()));
+		}
+		printer.printTotal(MoneyFormatter.penceToPounds(totalBill));
 	}
 	
 }

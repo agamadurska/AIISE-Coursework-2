@@ -1,6 +1,5 @@
 package com.acmetelecom;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import com.acmetelecom.call.CallsLogger;
@@ -33,10 +32,7 @@ public class BillingSystem {
 	private void createBillFor(Customer customer) {
 		CustomerBill customerBill = new CustomerBill(customer, tariffLibrary,
 				callsLogger.getCustomerCallEvents(customer));
-		BigDecimal totalBill = customerBill.charge();
-		Bill bill = new Bill(customer, customerBill.getCustomerCalls(),
-				MoneyFormatter.penceToPounds(totalBill));
-		bill.printBill(new HtmlPrinter(System.out));
+		customerBill.printBill(new HtmlPrinter(System.out));
 	}
 
 }
