@@ -4,10 +4,10 @@ public class Runner {
 	
 	public static void main(String[] args) throws Exception {
 		System.out.println("Running...");
-		PhoneEntity phone1 = new PhoneEntity("447722113434");
-		PhoneEntity phone2 = new PhoneEntity("447766814143");
-		PhoneEntity phone3 = new PhoneEntity("447777765432");
-		PhoneEntity phone4 = new PhoneEntity("447711111111");
+		Phone phone1 = new Phone("447722113434");
+		Phone phone2 = new Phone("447766814143");
+		Phone phone3 = new Phone("447777765432");
+		Phone phone4 = new Phone("447711111111");
 		BillingSystem billingSystem = new BillingSystem();
 		billingSystem.callInitiated(phone1, phone2);
 		sleepSeconds(2);

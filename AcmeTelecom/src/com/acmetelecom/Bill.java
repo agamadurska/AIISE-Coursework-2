@@ -3,6 +3,7 @@ package com.acmetelecom;
 import java.util.List;
 
 import com.acmetelecom.customer.Customer;
+import com.acmetelecom.output.Printer;
 
 public class Bill {
 	

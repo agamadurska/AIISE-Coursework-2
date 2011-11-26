@@ -1,7 +1,9 @@
-package com.acmetelecom;
+package com.acmetelecom.call;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import com.acmetelecom.Phone;
 
 public class Call {
 
@@ -13,7 +15,7 @@ public class Call {
 		this.end = end;
 	}
 
-	public PhoneEntity callee() {
+	public Phone callee() {
 		return start.getCallee();
 	}
 

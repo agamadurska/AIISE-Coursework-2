@@ -1,31 +1,13 @@
 package com.acmetelecom;
 
 /**
- * Class modeling an extendible type of phone number.
- * e.g.: one can later add free phone numbers.
+ * Interface that declares all the different methods the common phone must be
+ * able to handle.
  */
-public class PhoneEntity {
+public interface PhoneEntity {
 
-	private String phoneNumber;
+	String getPhoneNumber();
 	
-	public PhoneEntity(String phoneNumber) {
-		this.phoneNumber = phoneNumber;
-	}
+	void setPhoneNumber(String phoneNumber);
 	
-	public String getPhoneNumber() {
-		return phoneNumber;
-	}
-	
-	public void setPhoneNumber(String phoneNumber) {
-		this.phoneNumber = phoneNumber;
-	}
-	
-	public boolean equals(PhoneEntity phoneEntity) {
-		return phoneNumber.equals(phoneEntity.getPhoneNumber());
-	}
-	
-	public int hashCode() {
-		return phoneNumber.hashCode();
-	}
-
 }

@@ -1,15 +1,14 @@
 package com.acmetelecom;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-import java.io.UnsupportedEncodingException;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import sun.reflect.generics.tree.ByteSignature;
+
+import com.acmetelecom.output.HtmlPrinter;
 
 
 public class TestHtmlPrinter {
@@ -44,7 +43,7 @@ public class TestHtmlPrinter {
 		ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream();
 		HtmlPrinter htmlPrinter = new HtmlPrinter(
 				new PrintStream(byteOutputStream));
-		htmlPrinter.printItem("09:11:55", new PhoneEntity("666"), "3:07", "$0.23");
+		htmlPrinter.printItem("09:11:55", new Phone("666"), "3:07", "$0.23");
 
 		String actual = getOutput(byteOutputStream);
 		String expected = "<tr><td>09:11:55</td><td>666</td><td>3:07</td>" +

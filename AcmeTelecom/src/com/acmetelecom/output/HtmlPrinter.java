@@ -1,6 +1,8 @@
-package com.acmetelecom;
+package com.acmetelecom.output;
 
 import java.io.PrintStream;
+
+import com.acmetelecom.Phone;
 
 /**
  * Bosses don't use singletons.
@@ -8,7 +10,7 @@ import java.io.PrintStream;
  * Bosses use dependency injection.
  * Bosses put first the public classes then the private ones.
  */
-class HtmlPrinter implements Printer {
+public class HtmlPrinter implements Printer {
 
 	private final PrintStream printStream;
 	
@@ -29,7 +31,7 @@ class HtmlPrinter implements Printer {
   	beginTable();
   }
 
-  public void printItem(String time, PhoneEntity callee, String duration,
+  public void printItem(String time, Phone callee, String duration,
   		String cost) {
   	printStream.println(tr(td(time) + td(callee.getPhoneNumber()) +
   			td(duration) + td(cost)));

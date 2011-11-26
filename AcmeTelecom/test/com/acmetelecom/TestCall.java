@@ -1,16 +1,20 @@
 package com.acmetelecom;
 
-import static org.junit.Assert.fail;
 import junit.framework.TestCase;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.acmetelecom.call.Call;
+import com.acmetelecom.call.CallEnd;
+import com.acmetelecom.call.CallEvent;
+import com.acmetelecom.call.CallStart;
+
 public class TestCall extends TestCase {
 
-	public static final PhoneEntity caller1 = new PhoneEntity("08989999");
-	public static final PhoneEntity caller2 = new PhoneEntity("42");
+	public static final Phone caller1 = new Phone("08989999");
+	public static final Phone caller2 = new Phone("42");
 	
 	
 	@Before

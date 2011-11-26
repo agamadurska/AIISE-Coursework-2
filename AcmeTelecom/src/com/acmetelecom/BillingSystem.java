@@ -1,24 +1,30 @@
 package com.acmetelecom;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.acmetelecom.call.Call;
+import com.acmetelecom.call.CallEnd;
+import com.acmetelecom.call.CallEvent;
+import com.acmetelecom.call.CallStart;
 import com.acmetelecom.customer.CentralCustomerDatabase;
 import com.acmetelecom.customer.CentralTariffDatabase;
 import com.acmetelecom.customer.Customer;
 import com.acmetelecom.customer.Tariff;
-
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.*;
+import com.acmetelecom.output.HtmlPrinter;
 
 public class BillingSystem {
 
 	// Stores all the call start and end events.
 	private List<CallEvent> callLog = new ArrayList<CallEvent>();
 
-	public void callInitiated(PhoneEntity caller, PhoneEntity callee) {
+	public void callInitiated(Phone caller, Phone callee) {
 		callLog.add(new CallStart(caller, callee));
 	}
 
-	public void callCompleted(PhoneEntity caller, PhoneEntity callee) {
+	public void callCompleted(Phone caller, Phone callee) {
 		callLog.add(new CallEnd(caller, callee));
 	}
 
@@ -53,26 +59,10 @@ public class BillingSystem {
 		return customerEvents;
 	}
      
-	protected List<Call> getCustomerCalls(Customer customer) {
-		List<CallEvent> customerEvents = getCustomerCallEvents(customer);
-		List<Call> calls = new ArrayList<Call>();
-
-		// This assumes that only an end event can follow a start event.
-		CallEvent start = null;
-		for (CallEvent event : customerEvents) {
-			if (event instanceof CallStart) {
-				start = event;
-			}
-			if (event instanceof CallEnd && start != null) {
-				calls.add(new Call(start, event));
-				start = null;
-			}
-		}
-		return calls;
-	}
-    
 	private void createBillFor(Customer customer) {
-		List<Call> calls = getCustomerCalls(customer);
+		CustomerBill customerBill = new CustomerBill(customer,
+				getCustomerCallEvents(customer)); 
+		List<Call> calls = customerBill.getCustomerCalls();
 		BigDecimal totalBill = new BigDecimal(0);
 		List<LineItem> items = new ArrayList<LineItem>();
 
@@ -121,7 +111,7 @@ public class BillingSystem {
 			return call.date();
 		}
 
-		public PhoneEntity callee() {
+		public Phone callee() {
 			return call.callee();
 		}
 
