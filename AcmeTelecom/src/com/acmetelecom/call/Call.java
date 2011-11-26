@@ -57,4 +57,22 @@ public class Call {
 		return callCost;
 	}
 
+	@Override
+	public boolean equals(Object object) {
+		if (object instanceof Call) {
+			Call call = (Call)object;
+			return callee().equals(call.callee()) &&
+					startTime().equals(call.startTime()) &&
+					endTime().equals(call.endTime()) &&
+					cost().compareTo(call.cost()) == 0;
+		} else {
+			return false;
+		}
+	}
+	
+	@Override
+	public int hashCode() {
+		return start.hashCode() + end.hashCode() + callCost.hashCode();
+	}
+	
 }

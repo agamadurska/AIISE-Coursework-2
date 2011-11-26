@@ -29,9 +29,13 @@ public class CustomerBill {
 		refreshTariff();
 	}
 
-	protected List<Call> getCustomerCalls() {
+	/**
+	 * Returns customer calls.
+	 * 
+	 * @return a list containing the calls the customer has made.
+	 */
+	public List<Call> getCustomerCalls() {
 		List<Call> calls = new ArrayList<Call>();
-
 		// This assumes that only an end event can follow a start event.
 		CallEvent start = null;
 		for (CallEvent event : customerEvents) {
@@ -46,11 +50,13 @@ public class CustomerBill {
 		return calls;
 	}
 	
-	private void refreshTariff() {
-		tariff = tariffLibrary.tarriffFor(customer);
-	}
-	
-	protected BigDecimal computeCost(Call call) {
+	/**
+	 * Computes the cost of a call according to customer's tariff.
+	 * 
+	 * @param  call the call for which to compute the cost
+	 * @return the cost
+	 */
+	public BigDecimal computeCost(Call call) {
 		BigDecimal cost;
 		DaytimePeakPeriod peakPeriod = new DaytimePeakPeriod();
 		if (peakPeriod.offPeak(call.startTime()) &&
@@ -65,7 +71,12 @@ public class CustomerBill {
 		return cost;
 	}
 	
-	protected BigDecimal charge() {
+	/**
+	 * Charges the customer for all the calls he/she made.
+	 * 
+	 * @return the cost of all the calls
+	 */
+	public BigDecimal charge() {
 		BigDecimal totalBill = new BigDecimal(0);
 		for (Call call : getCustomerCalls()) {
 			BigDecimal cost = computeCost(call);
@@ -88,4 +99,8 @@ public class CustomerBill {
 		printer.printTotal(MoneyFormatter.penceToPounds(totalBill));
 	}
 	
+	private void refreshTariff() {
+		tariff = tariffLibrary.tarriffFor(customer);
+	}
+
 }
