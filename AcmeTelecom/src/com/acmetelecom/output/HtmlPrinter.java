@@ -2,7 +2,7 @@ package com.acmetelecom.output;
 
 import java.io.PrintStream;
 
-import com.acmetelecom.Phone;
+import com.acmetelecom.entity.PhoneEntity;
 
 /**
  * Bosses don't use singletons.
@@ -31,7 +31,7 @@ public class HtmlPrinter implements Printer {
   	beginTable();
   }
 
-  public void printItem(String time, Phone callee, String duration,
+  public void printItem(String time, PhoneEntity callee, String duration,
   		String cost) {
   	printStream.println(tr(td(time) + td(callee.getPhoneNumber()) +
   			td(duration) + td(cost)));

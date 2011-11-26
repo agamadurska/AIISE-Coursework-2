@@ -1,4 +1,4 @@
-package com.acmetelecom;
+package com.acmetelecom.entity;
 
 /**
  * Class modeling an extendible type of phone number.

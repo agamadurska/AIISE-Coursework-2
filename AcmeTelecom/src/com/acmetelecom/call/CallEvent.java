@@ -1,25 +1,25 @@
 package com.acmetelecom.call;
 
-import com.acmetelecom.Phone;
+import com.acmetelecom.entity.PhoneEntity;
 
 public abstract class CallEvent {
 
-	private Phone caller;
-	private Phone callee;
+	private PhoneEntity caller;
+	private PhoneEntity callee;
 	private long time;
 
 	// Bosses asked what is the unit for timeStamp????????
-	public CallEvent(Phone caller, Phone callee, long timeStamp) {
+	public CallEvent(PhoneEntity caller, PhoneEntity callee, long timeStamp) {
 		this.caller = caller;
 		this.callee = callee;
 		this.time = timeStamp;
 	}
 
-	public Phone getCaller() {
+	public PhoneEntity getCaller() {
 		return caller;
 	}
 
-  public Phone getCallee() {
+  public PhoneEntity getCallee() {
   	return callee;
   }
 

@@ -1,4 +1,4 @@
-package com.acmetelecom;
+package com.acmetelecom.entity;
 
 /**
  * Interface that declares all the different methods the common phone must be

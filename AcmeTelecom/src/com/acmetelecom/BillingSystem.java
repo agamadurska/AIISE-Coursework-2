@@ -13,6 +13,7 @@ import com.acmetelecom.customer.CentralCustomerDatabase;
 import com.acmetelecom.customer.CentralTariffDatabase;
 import com.acmetelecom.customer.Customer;
 import com.acmetelecom.customer.Tariff;
+import com.acmetelecom.entity.PhoneEntity;
 import com.acmetelecom.output.HtmlPrinter;
 
 public class BillingSystem {
@@ -20,11 +21,11 @@ public class BillingSystem {
 	// Stores all the call start and end events.
 	private List<CallEvent> callLog = new ArrayList<CallEvent>();
 
-	public void callInitiated(Phone caller, Phone callee) {
+	public void callInitiated(PhoneEntity caller, PhoneEntity callee) {
 		callLog.add(new CallStart(caller, callee));
 	}
 
-	public void callCompleted(Phone caller, Phone callee) {
+	public void callCompleted(PhoneEntity caller, PhoneEntity callee) {
 		callLog.add(new CallEnd(caller, callee));
 	}
 
@@ -111,7 +112,7 @@ public class BillingSystem {
 			return call.date();
 		}
 
-		public Phone callee() {
+		public PhoneEntity callee() {
 			return call.callee();
 		}
 

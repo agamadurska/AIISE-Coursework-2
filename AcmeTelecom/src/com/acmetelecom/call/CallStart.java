@@ -1,10 +1,10 @@
 package com.acmetelecom.call;
 
-import com.acmetelecom.Phone;
+import com.acmetelecom.entity.PhoneEntity;
 
 public class CallStart extends CallEvent {
 	
-	public CallStart(Phone caller, Phone callee) {
+	public CallStart(PhoneEntity caller, PhoneEntity callee) {
 		super(caller, callee, System.currentTimeMillis());
   }
     
@@ -15,7 +15,7 @@ public class CallStart extends CallEvent {
 	 * @param callee	the received of the call
 	 * @param endTimeStamp the timestamp when the call started
 	 */
-	public CallStart(Phone caller, Phone callee,
+	public CallStart(PhoneEntity caller, PhoneEntity callee,
 			long startTimeStamp) {
 		super(caller, callee, startTimeStamp);
   }
