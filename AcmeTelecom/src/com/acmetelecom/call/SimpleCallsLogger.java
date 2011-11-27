@@ -24,6 +24,10 @@ public class SimpleCallsLogger implements CallsLogger {
 		callLog.add(new CallEnd(caller, callee));
 	}
 	
+	public void addCallEvent(CallEvent callEvent) {
+		callLog.add(callEvent);
+	}
+	
 	public void clear() {
 		callLog.clear();
 	}

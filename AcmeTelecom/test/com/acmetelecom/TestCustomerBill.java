@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.easymock.EasyMock;
 import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.Before;
@@ -90,6 +91,21 @@ public class TestCustomerBill {
 		CustomerBill customerBill = new CustomerBill(customer,
 				new MockTariffLibrary(), callEvents);
 		assertTrue(new BigDecimal(162).compareTo(customerBill.charge()) == 0);
+	}
+	
+	@Test
+	public void testEqualsAndHashCode() {
+		Customer customer = new Customer("", "42", "");
+		TariffLibrary tariffLibrary = EasyMock.createMock(TariffLibrary.class);
+		EasyMock.expect(tariffLibrary.tarriffFor(customer))
+				.andReturn(Tariff.Standard).anyTimes();
+		EasyMock.replay(tariffLibrary);
+		CustomerBill customer1 = new CustomerBill(customer, tariffLibrary,
+				new ArrayList<CallEvent>());
+		CustomerBill customer2 = new CustomerBill(customer, tariffLibrary,
+				new ArrayList<CallEvent>());
+		assertEquals(customer1, customer2);
+		assertEquals(customer1.hashCode(), customer2.hashCode());
 	}
 
 	private class MockTariffLibrary implements TariffLibrary {

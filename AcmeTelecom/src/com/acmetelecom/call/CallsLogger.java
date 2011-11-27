@@ -11,6 +11,8 @@ public interface CallsLogger {
 	
 	void callCompleted(PhoneEntity caller, PhoneEntity callee);
 	
+	void addCallEvent(CallEvent callEvent);
+	
 	void clear();
 	
 	List<CallEvent> getCustomerCallEvents(Customer customer);

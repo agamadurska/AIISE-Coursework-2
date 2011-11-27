@@ -103,4 +103,20 @@ public class CustomerBill {
 		tariff = tariffLibrary.tarriffFor(customer);
 	}
 
+	@Override
+	public boolean equals(Object object) {
+		if (object instanceof CustomerBill) {
+			CustomerBill customerBill = (CustomerBill)object;
+			return customer.equals(customerBill.customer) &&
+					customerEvents.equals(customerBill.customerEvents);
+		} else {
+			return false;
+		}
+	}
+
+	@Override
+	public int hashCode() {
+		return customer.hashCode() % 98393893 + customerEvents.hashCode();
+	}
+
 }
