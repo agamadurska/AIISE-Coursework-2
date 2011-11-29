@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -23,6 +24,7 @@ import com.acmetelecom.customer.Tariff;
 import com.acmetelecom.customer.TariffLibrary;
 import com.acmetelecom.entity.Phone;
 import com.acmetelecom.entity.PhoneEntity;
+import com.sun.imageio.plugins.common.BogusColorSpace;
 
 public class TestCustomerBill {
 
@@ -66,21 +68,29 @@ public class TestCustomerBill {
 		CallEvent end2 = new CallEnd(phone1, phone2, timeEnd2);
 		Call call1 = new Call(start1, end1);
 		Call call2 = new Call(start1, end2);
+//		assertTrue(new BigDecimal(30.0).compareTo(
+//				customerBill.computeCost(call1)) == 0);
+//		assertTrue(new BigDecimal(330.0).compareTo(
+//				customerBill.computeCost(call2)) == 0);
+		MathContext m = new MathContext(2);
+		
 		assertTrue(new BigDecimal(30.0).compareTo(
 				customerBill.computeCost(call1)) == 0);
-		assertTrue(new BigDecimal(330.0).compareTo(
-				customerBill.computeCost(call2)) == 0);
+		assertTrue(new BigDecimal(312.0).compareTo(
+				customerBill.computeCost(call2).setScale(2, BigDecimal.ROUND_HALF_DOWN)) == 0);
 	}
 
 	@Test
 	public void testCharge() {
 		Phone phone3 = new Phone("2323");
+
 		long timeStart1 = new DateTime(2011, 11, 10, 18, 50, 0).toDate().getTime();
 		long timeEnd1 = new DateTime(2011, 11, 10, 18, 51, 0).toDate().getTime();
 		long timeStart2 = new DateTime(2011, 11, 10, 18, 57, 0).toDate().getTime();
 		long timeEnd2 = new DateTime(2011, 11, 10, 19, 1, 0).toDate().getTime();
 		long timeStart3 = new DateTime(2011, 11, 10, 19, 50, 0).toDate().getTime();
 		long timeEnd3 = new DateTime(2011, 11, 10, 19, 51, 0).toDate().getTime();
+		
 		List<CallEvent> callEvents = Arrays.asList(
 				new CallStart(phone1, phone2, timeStart1),
 				new CallEnd(phone1, phone2, timeEnd1),
@@ -90,7 +100,8 @@ public class TestCustomerBill {
 				new CallEnd(phone1, phone2, timeEnd3));
 		CustomerBill customerBill = new CustomerBill(customer,
 				new MockTariffLibrary(), callEvents);
-		assertTrue(new BigDecimal(162).compareTo(customerBill.charge()) == 0);
+//System.out.print(customerBill.charge());
+		assertTrue(new BigDecimal(144).compareTo(customerBill.charge()) == 0);
 	}
 	
 	@Test

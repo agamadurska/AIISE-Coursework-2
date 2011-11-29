@@ -5,6 +5,8 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
+import sun.util.calendar.LocalGregorianCalendar.Date;
+
 import com.acmetelecom.call.Call;
 import com.acmetelecom.call.CallEnd;
 import com.acmetelecom.call.CallEvent;
@@ -57,18 +59,82 @@ public class CustomerBill {
 	 * @return the cost
 	 */
 	public BigDecimal computeCost(Call call) {
+		
 		BigDecimal cost;
 		DaytimePeakPeriod peakPeriod = new DaytimePeakPeriod();
+		
+		// The call starts and ends during offpeak hours.
 		if (peakPeriod.offPeak(call.startTime()) &&
 				peakPeriod.offPeak(call.endTime()) &&
 				call.durationSeconds() < 12 * 60 * 60) {
 			cost = new BigDecimal(call.durationSeconds())
 					.multiply(tariff.offPeakRate());
-		} else {
+		}
+		// The call starts and ends during peak hours.
+		else if (!peakPeriod.offPeak(call.startTime()) &&
+				!peakPeriod.offPeak(call.endTime()) &&
+				call.durationSeconds() < 12 * 60 * 60){
 			cost = new BigDecimal(call.durationSeconds())
 					.multiply(tariff.peakRate());
 		}
+		// The call starts during offpeak and ends during peak hours.
+		else if (peakPeriod.offPeak(call.startTime()) &&
+				!peakPeriod.offPeak(call.endTime()) &&
+				call.durationSeconds() < 12 * 60 * 60){
+			// The part of the conversation during offpeak.
+			cost = new BigDecimal(milisecondsToseconds(
+					peakPeriod.getPickStart()
+					- convertToMiliseconds(call.startTime())))
+					.multiply(tariff.offPeakRate());
+			// The part of the conversation during peak.
+			BigDecimal cost1 = new BigDecimal(milisecondsToseconds(
+					convertToMiliseconds(call.endTime())
+					- peakPeriod.getPickStart()))
+					.multiply(tariff.peakRate());
+			cost = cost.add(cost1);
+		}
+		// The call starts during peak and ends during offpeak hours.
+		else {
+			// The part of the conversation during peak.
+			cost = new BigDecimal(milisecondsToseconds(
+					peakPeriod.getPickEnd() 
+					- convertToMiliseconds(call.startTime())))
+					.multiply(tariff.peakRate());
+			// The part of the conversation during offpeak.
+			BigDecimal cost1 = new BigDecimal(milisecondsToseconds(
+					convertToMiliseconds(call.endTime())
+					- peakPeriod.getPickEnd()))
+					.multiply(tariff.offPeakRate());
+			cost = cost.add(cost1);
+		}
 		return cost;
+		
+		
+		
+// Old version
+//
+//		BigDecimal cost;
+//		DaytimePeakPeriod peakPeriod = new DaytimePeakPeriod();
+//		if (peakPeriod.offPeak(call.startTime()) &&
+//				peakPeriod.offPeak(call.endTime()) &&
+//				call.durationSeconds() < 12 * 60 * 60) {
+//			cost = new BigDecimal(call.durationSeconds())
+//					.multiply(tariff.offPeakRate());
+//		} else {
+//			cost = new BigDecimal(call.durationSeconds())
+//					.multiply(tariff.peakRate());
+//		}
+//		return cost;
+	}
+	
+	private long convertToMiliseconds(java.util.Date date){
+		return date.getHours() * 60 * 60 * 1000 +
+				date.getMinutes() * 60 * 1000 +
+				date.getSeconds() * 1000;
+	}
+	
+	private long milisecondsToseconds(long miliseconds){
+		return miliseconds / 1000;
 	}
 	
 	/**
