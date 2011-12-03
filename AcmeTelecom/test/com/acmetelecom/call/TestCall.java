@@ -33,9 +33,12 @@ public class TestCall extends TestCase {
 	public void testDurationSeconds() {
 		long startTimeStamp = 1000;
 		long endTimeStamp = 10000;
+
 		CallEvent callStart = new CallStart(caller1, caller2, startTimeStamp);
 		CallEvent callEnd = new CallEnd(caller1, caller2, endTimeStamp);
+
 		Call call = new Call(callStart, callEnd);
+
 		assertEquals(call.durationSeconds(),
 			TestUtils.millisecondsToSeconds(endTimeStamp - startTimeStamp));
 	}
@@ -44,9 +47,12 @@ public class TestCall extends TestCase {
 	public void testDurationSeconds2() {
 		long startTimeStamp = 1000;
 		long endTimeStamp = 6546;
+
 		CallEvent callStart = new CallStart(caller1, caller2, startTimeStamp);
 		CallEvent callEnd = new CallEnd(caller1, caller2, endTimeStamp);
+
 		Call call = new Call(callStart, callEnd);
+
 		assertEquals(call.durationSeconds(),
 			TestUtils.millisecondsToSeconds(endTimeStamp - startTimeStamp));
 	}
@@ -56,9 +62,11 @@ public class TestCall extends TestCase {
 		CallEvent callStart = new CallStart(caller1, caller2, 1000);
 		CallEvent callStart2 = new CallStart(caller1, caller2, 2000);
 		CallEvent callEnd = new CallEnd(caller1, caller2, 10000);
+
 		Call call1 = new Call(callStart, callEnd, new BigDecimal(0));
 		Call call2 = new Call(callStart, callEnd);
 		Call call3 = new Call(callStart2, callEnd);
+
 		assertEquals(call1, call2);
 		assertEquals(call1.hashCode(), call2.hashCode());
 		assertFalse(call1.equals(call3));

@@ -19,9 +19,9 @@ class DaytimePeakPeriod {
 	 * @param peakStart as hour value. 
 	 * @param peakEnd as hour value.
 	 */
-	public DaytimePeakPeriod(long pickStart, long pickEnd) {
-		this.peakStart = pickStart;
-		this.peakEnd = pickEnd;
+	public DaytimePeakPeriod(long peakStart, long peakEnd) {
+		this.peakStart = peakStart;
+		this.peakEnd = peakEnd;
 	}
 
 	public boolean offPeak(Date time) {
@@ -44,5 +44,22 @@ class DaytimePeakPeriod {
 	public long getPeakEnd(){
 		return peakEnd * 60 * 60 * 1000;
 	}
+
+    /**
+    * @return peak start hours
+    */
+
+    public long getPeakStartHours() {
+        return peakStart;
+    }
+
+    /**
+    * @return peak end hours
+    */
+
+    public long getPeakEndHours() {
+        return peakEnd;
+    }
+
 
 }

@@ -19,11 +19,22 @@ public class TestDaytimePeakPeriod {
 	}
 
 	@Test
-	public void testOffPeak() {
+	public void testOffPeakTime() {
 		DaytimePeakPeriod daytimePeakPeriod = new DaytimePeakPeriod();
-		DateTime peakTime = new DateTime(2012, 06, 06, 18, 06, 06);
-		DateTime offpeakTime = new DateTime(2012, 04, 03, 03, 23, 17);
+        int hour = (int) daytimePeakPeriod.getPeakEndHours();
+
+		DateTime offpeakTime = new DateTime(2012, 4, 3, hour, 23, 17);
+
 		assertTrue(daytimePeakPeriod.offPeak(offpeakTime.toDate()));
+	}
+
+    @Test
+	public void testPeakTime() {
+		DaytimePeakPeriod daytimePeakPeriod = new DaytimePeakPeriod();
+        int hour = (int) daytimePeakPeriod.getPeakStartHours();
+
+		DateTime peakTime = new DateTime(2012, 6, 6, hour, 16, 6);
+
 		assertFalse(daytimePeakPeriod.offPeak(peakTime.toDate()));
 	}
 

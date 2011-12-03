@@ -38,13 +38,16 @@ public class TestSimpleCallsLogger {
 	}
 
 	@Test
-	public void testgetCustomerCallEvents() {
+	public void testGetCustomerCallEvents() {
 		customer = new Customer("", "42", "");
+
 		List<CallEvent> expectedCallEvents = Arrays.asList(
 				new CallStart(caller, callee), new CallEnd(caller, callee));
-		callsLogger.callInitiated(caller, callee);
+
+        callsLogger.callInitiated(caller, callee);
 		callsLogger.callCompleted(caller, callee);
 		callsLogger.callInitiated(callee, caller);
+
 		assertEquals(expectedCallEvents,
 				callsLogger.getCustomerCallEvents(customer));
 	}
@@ -53,6 +56,7 @@ public class TestSimpleCallsLogger {
 	public void testClear() {
 		callsLogger.callInitiated(caller, callee);
 		assertEquals(1, callsLogger.getCustomerCallEvents(customer).size());
+
 		callsLogger.clear();
 		assertEquals(0, callsLogger.getCustomerCallEvents(customer).size());
 	}
