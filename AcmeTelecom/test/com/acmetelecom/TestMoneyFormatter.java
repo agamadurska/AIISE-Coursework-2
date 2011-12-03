@@ -1,6 +1,7 @@
 package com.acmetelecom;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormatSymbols;
 
 import junit.framework.TestCase;
 
@@ -20,7 +21,12 @@ public class TestMoneyFormatter extends TestCase {
 
 	@Test
 	public void testPenceToPounds() {
-		assertEquals("0.10", MoneyFormatter.penceToPounds(new BigDecimal(10.1)));
+//      This test needs to cater for different decimal symbols used in various locales
+        DecimalFormatSymbols formatSymbols = new DecimalFormatSymbols();
+        char separator = formatSymbols.getMonetaryDecimalSeparator();
+
+        String expected = "0" + separator + "10";
+		assertEquals(expected, MoneyFormatter.penceToPounds(new BigDecimal(10.1)));
 	}
 
 }
