@@ -1,7 +1,6 @@
 package com.acmetelecom;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -28,16 +27,11 @@ import com.acmetelecom.entity.PhoneEntity;
 public class TestCustomerBill {
 
 	private Customer customer;
-
 	private PhoneEntity phone1;
 	private PhoneEntity phone2;
-
-    private TariffLibrary tariffLibrary;
-    private Tariff tariff;
-
-    private DaytimePeakPeriod daytimePeakPeriod;
-    private int peakStart;
-    private int peakEnd;
+  private DaytimePeakPeriod daytimePeakPeriod;
+  private int peakStart;
+  private int peakEnd;
 
     @Before
 	public void setUp() throws Exception {
@@ -45,13 +39,10 @@ public class TestCustomerBill {
 		phone1 = new Phone("42");
 		phone2 = new Phone("47");
 
-        tariffLibrary = new MockTariffLibrary();
-        tariff = tariffLibrary.tarriffFor(customer);
+    daytimePeakPeriod = new DaytimePeakPeriod();
 
-        daytimePeakPeriod = new DaytimePeakPeriod();
-
-        peakStart = (int) daytimePeakPeriod.getPeakStartHours();
-        peakEnd = (int) daytimePeakPeriod.getPeakEndHours();
+    peakStart = (int) daytimePeakPeriod.getPeakStartHours();
+    peakEnd = (int) daytimePeakPeriod.getPeakEndHours();
 	}
 
 	@After
@@ -66,9 +57,14 @@ public class TestCustomerBill {
 		CallEvent event1 = new CallStart(phone1, phone2,start1);
 		CallEvent event2 = new CallEnd(phone1, phone2, end1);
 
+		TariffLibrary tariffLibrary = EasyMock.createMock(TariffLibrary.class);
+ 		EasyMock.expect(tariffLibrary.tarriffFor(customer))
+ 				.andReturn(Tariff.Standard).anyTimes();
+ 		EasyMock.replay(tariffLibrary);
+		
 		List<CallEvent> customerEvents = Arrays.asList(event1, event2);
 		CustomerBill customerBill = new CustomerBill(customer,
-				new MockTariffLibrary(), customerEvents);
+				tariffLibrary, customerEvents);
 
 		assertEquals(Arrays.asList(new Call(event1, event2)),
 				customerBill.getCustomerCalls());
@@ -76,15 +72,24 @@ public class TestCustomerBill {
 
     @Test
 	public void testComputeCost() {
+		TariffLibrary tariffLibrary = EasyMock.createMock(TariffLibrary.class);
+ 		EasyMock.expect(tariffLibrary.tarriffFor(customer))
+ 				.andReturn(Tariff.Standard).anyTimes();
+ 		EasyMock.replay(tariffLibrary);
+
 		CustomerBill customerBill = new CustomerBill(customer,
-				new MockTariffLibrary(), new ArrayList<CallEvent>());
+				tariffLibrary, new ArrayList<CallEvent>());
 
-		long timeStart1 = new DateTime(2011, 11, 10, peakEnd   - 1, 50, 0).toDate().getTime();
-		long timeStart2 = new DateTime(2011, 11, 10, peakStart - 1, 50, 0).toDate().getTime();
-
-		long timeEnd1 = new DateTime(2011, 11, 10, peakEnd - 1, 51, 0).toDate().getTime();
-		long timeEnd2 = new DateTime(2011, 11, 10, peakEnd     , 1, 0).toDate().getTime();
-		long timeEnd3 = new DateTime(2011, 11, 10,  peakStart, 1, 0).toDate().getTime();
+		long timeStart1 = new DateTime(2011, 11, 10, peakEnd - 1, 50, 0).toDate()
+				.getTime();
+		long timeStart2 = new DateTime(2011, 11, 10, peakStart - 1, 50, 0).toDate()
+				.getTime();
+		long timeEnd1 = new DateTime(2011, 11, 10, peakEnd - 1, 51, 0).toDate()
+				.getTime();
+		long timeEnd2 = new DateTime(2011, 11, 10, peakEnd, 1, 0).toDate()
+				.getTime();
+		long timeEnd3 = new DateTime(2011, 11, 10,  peakStart, 1, 0).toDate()
+				.getTime();
 
 		CallEvent start1 = new CallStart(phone1, phone2, timeStart1);
 		CallEvent end1 = new CallEnd(phone1, phone2, timeEnd1);
@@ -94,120 +99,141 @@ public class TestCustomerBill {
 
 		Call call1 = new Call(start1, end1);
 		Call call2 = new Call(start1, end2);
-        Call call3 = new Call(start2, end3);
+		Call call3 = new Call(start2, end3);
+		
+		Tariff tariff = tariffLibrary.tarriffFor(customer);
+		
+		BigDecimal expectedCost = calculateExpectedCharge(tariff, 60, 0);
+		assertEquals(expectedCost.setScale(1), customerBill.computeCost(call1));
 
-        BigDecimal expectedCost = calculateExpectedCharge(60, 0);
-        assertEquals(expectedCost.setScale(1), customerBill.computeCost(call1));
+		expectedCost = calculateExpectedCharge(tariff, 10 * 60, 60);
+		assertEquals(expectedCost, customerBill.computeCost(call2));
 
-        expectedCost = calculateExpectedCharge(10 * 60, 60);
-        assertEquals(expectedCost, customerBill.computeCost(call2));
-
-        expectedCost = calculateExpectedCharge(60, 10 * 60);
-        assertEquals(expectedCost, customerBill.computeCost(call3));
+		expectedCost = calculateExpectedCharge(tariff, 60, 10 * 60);
+		assertEquals(expectedCost, customerBill.computeCost(call3));
 
 	}
 
     @Test
 	public void testChargePeak() {
-
-		long timeStart = new DateTime(2011, 11, 10, peakStart, 50, 0).toDate().getTime();
-		long timeEnd   = new DateTime(2011, 11, 10, peakStart, 51, 0).toDate().getTime();
+		long timeStart = new DateTime(2011, 11, 10, peakStart, 50, 0).toDate()
+				.getTime();
+		long timeEnd   = new DateTime(2011, 11, 10, peakStart, 51, 0).toDate()
+				.getTime();
 
 		List<CallEvent> callEvents = Arrays.asList(
 				new CallStart(phone1, phone2, timeStart),
 				new CallEnd(phone1, phone2, timeEnd));
 
+		TariffLibrary tariffLibrary = EasyMock.createMock(TariffLibrary.class);
+		EasyMock.expect(tariffLibrary.tarriffFor(customer))
+				.andReturn(Tariff.Standard).anyTimes();
+		EasyMock.replay(tariffLibrary);
+		
 		CustomerBill customerBill = new CustomerBill(customer,
-				new MockTariffLibrary(), callEvents);
-
-        BigDecimal expectedCharge = new BigDecimal(60)
-					.multiply(tariff.peakRate());
-        expectedCharge = expectedCharge.setScale(0, RoundingMode.HALF_UP);
-
-        assertEquals(expectedCharge, customerBill.charge());
+				tariffLibrary, callEvents);
+		
+		Tariff tariff = tariffLibrary.tarriffFor(customer);
+		BigDecimal expectedCharge = new BigDecimal(60)
+				.multiply(tariff.peakRate()).setScale(0, RoundingMode.HALF_UP);
+		assertEquals(expectedCharge, customerBill.charge());
 	}
 
     @Test
 	public void testChargeOffPeak() {
-
-		long timeStart = new DateTime(2011, 11, 10, peakEnd, 50, 0).toDate().getTime();
-		long timeEnd   = new DateTime(2011, 11, 10, peakEnd, 51, 0).toDate().getTime();
+		long timeStart = new DateTime(2011, 11, 10, peakEnd, 50, 0).toDate()
+				.getTime();
+		long timeEnd   = new DateTime(2011, 11, 10, peakEnd, 51, 0).toDate()
+				.getTime();
 
 		List<CallEvent> callEvents = Arrays.asList(
 				new CallStart(phone1, phone2, timeStart),
 				new CallEnd(phone1, phone2, timeEnd));
 
+		TariffLibrary tariffLibrary = EasyMock.createMock(TariffLibrary.class);
+		EasyMock.expect(tariffLibrary.tarriffFor(customer))
+				.andReturn(Tariff.Standard).anyTimes();
+		EasyMock.replay(tariffLibrary);
+		
 		CustomerBill customerBill = new CustomerBill(customer,
-				new MockTariffLibrary(), callEvents);
-
-        BigDecimal expectedCharge = new BigDecimal(60)
-					.multiply(tariff.offPeakRate());
-        expectedCharge = expectedCharge.setScale(0, RoundingMode.HALF_UP);
-
-        assertEquals(expectedCharge, customerBill.charge());
+				tariffLibrary, callEvents);
+		
+		Tariff tariff = tariffLibrary.tarriffFor(customer);
+    BigDecimal expectedCharge = new BigDecimal(60)
+    		.multiply(tariff.offPeakRate()).setScale(0, RoundingMode.HALF_UP);
+    assertEquals(expectedCharge, customerBill.charge());
 	}
 
     @Test
 	public void testChargePeakToOffPeak() {
-
-		long timeStart = new DateTime(2011, 11, 10, peakEnd - 1, 59, 0).toDate().getTime();
-		long timeEnd   = new DateTime(2011, 11, 10, peakEnd, 1, 0).toDate().getTime();
+		long timeStart = new DateTime(2011, 11, 10, peakEnd - 1, 59, 0).toDate()
+				.getTime();
+		long timeEnd   = new DateTime(2011, 11, 10, peakEnd, 1, 0).toDate()
+				.getTime();
 
 		List<CallEvent> callEvents = Arrays.asList(
 				new CallStart(phone1, phone2, timeStart),
 				new CallEnd(phone1, phone2, timeEnd));
 
+		TariffLibrary tariffLibrary = EasyMock.createMock(TariffLibrary.class);
+		EasyMock.expect(tariffLibrary.tarriffFor(customer))
+				.andReturn(Tariff.Standard).anyTimes();
+		EasyMock.replay(tariffLibrary);
+
 		CustomerBill customerBill = new CustomerBill(customer,
-				new MockTariffLibrary(), callEvents);
+				tariffLibrary, callEvents);
 
-        BigDecimal expectedCharge = new BigDecimal(60)
-					.multiply(tariff.offPeakRate());
-        expectedCharge = expectedCharge.add(new BigDecimal(60)
-					.multiply(tariff.peakRate()));
-
-        expectedCharge = expectedCharge.setScale(0, RoundingMode.HALF_UP);
-
-        assertEquals(expectedCharge, customerBill.charge());
+		Tariff tariff = tariffLibrary.tarriffFor(customer);
+		BigDecimal expectedCharge = new BigDecimal(60)
+				.multiply(tariff.offPeakRate()).add(new BigDecimal(60)
+						.multiply(tariff.peakRate())).setScale(0, RoundingMode.HALF_UP);
+    assertEquals(expectedCharge, customerBill.charge());
 	}
 
     @Test
 	public void testChargeOffPeakToPeak() {
-
-		long timeStart = new DateTime(2011, 11, 10, peakStart - 1, 59, 0).toDate().getTime();
-		long timeEnd = new DateTime(2011, 11, 10, peakStart, 2, 0).toDate().getTime();
+		long timeStart = new DateTime(2011, 11, 10, peakStart - 1, 59, 0).toDate()
+				.getTime();
+		long timeEnd = new DateTime(2011, 11, 10, peakStart, 2, 0).toDate()
+				.getTime();
 
 		List<CallEvent> callEvents = Arrays.asList(
 				new CallStart(phone1, phone2, timeStart),
 				new CallEnd(phone1, phone2, timeEnd));
 
+		TariffLibrary tariffLibrary = EasyMock.createMock(TariffLibrary.class);
+		EasyMock.expect(tariffLibrary.tarriffFor(customer))
+				.andReturn(Tariff.Standard).anyTimes();
+		EasyMock.replay(tariffLibrary);
+
 		CustomerBill customerBill = new CustomerBill(customer,
-				new MockTariffLibrary(), callEvents);
+				tariffLibrary, callEvents);
 
-        BigDecimal expectedCharge = new BigDecimal(60)
-					.multiply(tariff.offPeakRate());
-        expectedCharge = expectedCharge.add(new BigDecimal(2 * 60)
-					.multiply(tariff.peakRate()));
-
-        expectedCharge = expectedCharge.setScale(0, RoundingMode.HALF_UP);
-
-        assertEquals(expectedCharge, customerBill.charge());
+		Tariff tariff = tariffLibrary.tarriffFor(customer);
+		BigDecimal expectedCharge = new BigDecimal(60)
+				.multiply(tariff.offPeakRate()).add(new BigDecimal(2 * 60)
+						.multiply(tariff.peakRate())).setScale(0, RoundingMode.HALF_UP);
+		assertEquals(expectedCharge, customerBill.charge());
 	}
 
 @Test
 	public void testChargeMultipleCalls() {
 		Phone phone3 = new Phone("2323");
-
         // Peak-time call
-		long timeStart1 = new DateTime(2011, 11, 10, peakStart, 50, 0).toDate().getTime();
-		long timeEnd1   = new DateTime(2011, 11, 10, peakStart, 51, 0).toDate().getTime();
-
+		long timeStart1 = new DateTime(2011, 11, 10, peakStart, 50, 0).toDate()
+				.getTime();
+		long timeEnd1   = new DateTime(2011, 11, 10, peakStart, 51, 0).toDate()
+				.getTime();
         // Cross-time call
-		long timeStart2 = new DateTime(2011, 11, 10, peakEnd - 1, 57, 0).toDate().getTime();
-		long timeEnd2   = new DateTime(2011, 11, 10, peakEnd    ,  1, 0).toDate().getTime();
-
+		long timeStart2 = new DateTime(2011, 11, 10, peakEnd - 1, 57, 0).toDate()
+				.getTime();
+		long timeEnd2   = new DateTime(2011, 11, 10, peakEnd,  1, 0).toDate()
+				.getTime();
         // Off-Peak call
-		long timeStart3 = new DateTime(2011, 11, 10, peakEnd + 1, 50, 0).toDate().getTime();
-		long timeEnd3   = new DateTime(2011, 11, 10, peakEnd + 1, 51, 0).toDate().getTime();
+		long timeStart3 = new DateTime(2011, 11, 10, peakEnd + 1, 50, 0).toDate()
+				.getTime();
+		long timeEnd3   = new DateTime(2011, 11, 10, peakEnd + 1, 51, 0).toDate()
+				.getTime();
 
 		List<CallEvent> callEvents = Arrays.asList(
 				new CallStart(phone1, phone2, timeStart1),
@@ -217,12 +243,17 @@ public class TestCustomerBill {
 				new CallStart(phone1, phone2, timeStart3),
 				new CallEnd(phone1, phone2, timeEnd3));
 
+		TariffLibrary tariffLibrary = EasyMock.createMock(TariffLibrary.class);
+		EasyMock.expect(tariffLibrary.tarriffFor(customer))
+				.andReturn(Tariff.Standard).anyTimes();
+		EasyMock.replay(tariffLibrary);
+
 		CustomerBill customerBill = new CustomerBill(customer,
-				new MockTariffLibrary(), callEvents);
-
-        BigDecimal expectedCharge = calculateExpectedCharge(4 * 60, 2 * 60);
-
-        assertEquals(expectedCharge.setScale(0, RoundingMode.HALF_UP), customerBill.charge());
+				tariffLibrary, callEvents);
+    BigDecimal expectedCharge = calculateExpectedCharge(
+    		tariffLibrary.tarriffFor(customer), 4 * 60, 2 * 60);
+    assertEquals(expectedCharge.setScale(0, RoundingMode.HALF_UP),
+    		customerBill.charge());
 	}
 
 	@Test
@@ -243,22 +274,12 @@ public class TestCustomerBill {
 		assertEquals(customer1.hashCode(), customer2.hashCode());
 	}
 
-	private class MockTariffLibrary implements TariffLibrary {
-
-		@Override
-		public Tariff tarriffFor(Customer customer) {
-			return Tariff.Standard;
-		}
-		
-	}
-
-    private BigDecimal calculateExpectedCharge(int peakSeconds, int offPeakSeconds) {
-        BigDecimal expectedCharge = new BigDecimal(offPeakSeconds)
-					.multiply(tariff.offPeakRate());
-        expectedCharge = expectedCharge.add(new BigDecimal(peakSeconds)
-					.multiply(tariff.peakRate()));
-
-        return expectedCharge;
-    }
+  private BigDecimal calculateExpectedCharge(Tariff tariff, int peakSeconds,
+  		int offPeakSeconds) {
+    BigDecimal expectedCharge = new BigDecimal(offPeakSeconds)
+			  .multiply(tariff.offPeakRate()).add(new BigDecimal(peakSeconds)
+				  	.multiply(tariff.peakRate()));
+    return expectedCharge;
+  }
 
 }
