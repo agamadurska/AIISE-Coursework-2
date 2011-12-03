@@ -5,8 +5,6 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
-import sun.util.calendar.LocalGregorianCalendar.Date;
-
 import com.acmetelecom.call.Call;
 import com.acmetelecom.call.CallEnd;
 import com.acmetelecom.call.CallEvent;
@@ -83,13 +81,13 @@ public class CustomerBill {
 				call.durationSeconds() < 12 * 60 * 60){
 			// The part of the conversation during offpeak.
 			cost = new BigDecimal(milisecondsToseconds(
-					peakPeriod.getPickStart()
+					peakPeriod.getPeakStart()
 					- convertToMiliseconds(call.startTime())))
 					.multiply(tariff.offPeakRate());
 			// The part of the conversation during peak.
 			BigDecimal cost1 = new BigDecimal(milisecondsToseconds(
 					convertToMiliseconds(call.endTime())
-					- peakPeriod.getPickStart()))
+					- peakPeriod.getPeakStart()))
 					.multiply(tariff.peakRate());
 			cost = cost.add(cost1);
 		}
@@ -97,13 +95,13 @@ public class CustomerBill {
 		else {
 			// The part of the conversation during peak.
 			cost = new BigDecimal(milisecondsToseconds(
-					peakPeriod.getPickEnd() 
+					peakPeriod.getPeakEnd() 
 					- convertToMiliseconds(call.startTime())))
 					.multiply(tariff.peakRate());
 			// The part of the conversation during offpeak.
 			BigDecimal cost1 = new BigDecimal(milisecondsToseconds(
 					convertToMiliseconds(call.endTime())
-					- peakPeriod.getPickEnd()))
+					- peakPeriod.getPeakEnd()))
 					.multiply(tariff.offPeakRate());
 			cost = cost.add(cost1);
 		}
