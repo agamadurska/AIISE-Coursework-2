@@ -1,8 +1,8 @@
 package com.acmetelecom.entity;
 
 /**
- * Class modeling an extendible type of phone number.
- * e.g.: one can later add free phone numbers.
+ * Class modelling an extendible type of phone number.
+ * e.g. one can later add free phone numbers.
  */
 public class Phone implements PhoneEntity {
 
@@ -34,5 +34,4 @@ public class Phone implements PhoneEntity {
 	public int hashCode() {
 		return phoneNumber.hashCode();
 	}
-
 }

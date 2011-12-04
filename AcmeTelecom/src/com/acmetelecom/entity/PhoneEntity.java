@@ -7,7 +7,7 @@ package com.acmetelecom.entity;
 public interface PhoneEntity {
 
 	String getPhoneNumber();
-	
+
 	void setPhoneNumber(String phoneNumber);
-	
+
 }

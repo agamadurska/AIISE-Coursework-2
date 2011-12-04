@@ -11,6 +11,11 @@ import com.acmetelecom.output.Printer;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 
+/**
+ * GUICE module, dealing with binding external dependencies with the billing
+ * system. Currently this includes the printer, customer database, as well as
+ * tariff library,.
+ */
 public class BillingModule extends AbstractModule {
 
 	@Override

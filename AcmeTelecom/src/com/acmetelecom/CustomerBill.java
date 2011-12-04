@@ -85,11 +85,11 @@ public class CustomerBill {
 					- convertToMiliseconds(call.startTime())))
 					.multiply(tariff.offPeakRate());
 			// The part of the conversation during peak.
-			BigDecimal cost1 = new BigDecimal(milisecondsToseconds(
+			BigDecimal peakCost = new BigDecimal(milisecondsToseconds(
 					convertToMiliseconds(call.endTime())
 					- peakPeriod.getPeakStart()))
 					.multiply(tariff.peakRate());
-			cost = cost.add(cost1);
+			cost = cost.add(peakCost);
 		}
 		// The call starts during peak and ends during offpeak hours.
 		else {
@@ -99,32 +99,16 @@ public class CustomerBill {
 					- convertToMiliseconds(call.startTime())))
 					.multiply(tariff.peakRate());
 			// The part of the conversation during offpeak.
-			BigDecimal cost1 = new BigDecimal(milisecondsToseconds(
+			BigDecimal offPeakCost = new BigDecimal(milisecondsToseconds(
 					convertToMiliseconds(call.endTime())
 					- peakPeriod.getPeakEnd()))
 					.multiply(tariff.offPeakRate());
-			cost = cost.add(cost1);
+			cost = cost.add(offPeakCost);
 		}
 		return cost;
-		
-		
-		
-// Old version
-//
-//		BigDecimal cost;
-//		DaytimePeakPeriod peakPeriod = new DaytimePeakPeriod();
-//		if (peakPeriod.offPeak(call.startTime()) &&
-//				peakPeriod.offPeak(call.endTime()) &&
-//				call.durationSeconds() < 12 * 60 * 60) {
-//			cost = new BigDecimal(call.durationSeconds())
-//					.multiply(tariff.offPeakRate());
-//		} else {
-//			cost = new BigDecimal(call.durationSeconds())
-//					.multiply(tariff.peakRate());
-//		}
-//		return cost;
 	}
 	
+	@SuppressWarnings("deprecation")
 	private long convertToMiliseconds(java.util.Date date){
 		return date.getHours() * 60 * 60 * 1000 +
 				date.getMinutes() * 60 * 1000 +
@@ -155,9 +139,10 @@ public class CustomerBill {
 	public void printBill(Printer printer) {
 		BigDecimal totalBill = charge();
 		printer.printHeading(customer.getFullName(), customer.getPhoneNumber(),
-				customer.getPricePlan());
+			customer.getPricePlan());
 		for (Call call : getCustomerCalls()) {
-			printer.printItem(call.date(), call.callee(), call.durationMinutes(),
+			printer.printItem(call.date(), call.callee(),
+				call.durationMinutes(),
 					MoneyFormatter.penceToPounds(call.cost()));
 		}
 		printer.printTotal(MoneyFormatter.penceToPounds(totalBill));

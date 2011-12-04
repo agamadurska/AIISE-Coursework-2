@@ -9,6 +9,10 @@ import com.acmetelecom.customer.CustomerDatabase;
 import com.acmetelecom.customer.TariffLibrary;
 import com.google.inject.Inject;
 
+/**
+ * Simple implementation of a billing system. Creates a bill for every
+ * customer in the database.
+ */
 public class CompleteBillingSystem implements BillingSystem {
 	
 	private final CallsLogger callsLogger;
@@ -23,6 +27,9 @@ public class CompleteBillingSystem implements BillingSystem {
 		this.tariffLibrary = tariffLibrary;
 	}
 	
+	/**
+	 * Create bills for all customers.
+	 */
 	public List<CustomerBill> createCustomersBill() {
 		List<CustomerBill> customersBill = new ArrayList<CustomerBill>();
 		for (Customer customer : customerDatabase.getCustomers()) {
@@ -32,6 +39,9 @@ public class CompleteBillingSystem implements BillingSystem {
 		return customersBill;
 	}
 	
+	/**
+	 * Create a bill for a given customer.
+	 */
 	private CustomerBill createBillFor(Customer customer) {
 		return new CustomerBill(customer, tariffLibrary,
 				callsLogger.getCustomerCallEvents(customer));

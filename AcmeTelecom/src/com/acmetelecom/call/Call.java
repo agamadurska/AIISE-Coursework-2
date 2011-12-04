@@ -11,7 +11,7 @@ public class Call {
 	private CallEvent start;
 	private CallEvent end;
 	private BigDecimal callCost;
-
+	
 	public Call(CallEvent start, CallEvent end) {
 		this.start = start;
 		this.end = end;
@@ -23,30 +23,30 @@ public class Call {
 		this.end = end;
 		this.callCost = callCost;		
 	}
-
+	
 	public PhoneEntity callee() {
 		return start.getCallee();
 	}
 
-  public int durationSeconds() {
-  	return (int) (((end.time() - start.time()) / 1000));
-  }
-
-  public String date() {
-  	return SimpleDateFormat.getInstance().format(new Date(start.time()));
-  }
-
-  public Date startTime() {
-  	return new Date(start.time());
-  }
-
-  public Date endTime() {
-    return new Date(end.time());
-  }
-  
-  public void setCallCost(BigDecimal callCost) {
-  	this.callCost = callCost;
-  }
+	public int durationSeconds() {
+		return (int) (((end.time() - start.time()) / 1000));
+	}
+	
+	public String date() {
+		return SimpleDateFormat.getInstance().format(new Date(start.time()));
+	}
+	
+	public Date startTime() {
+	  	return new Date(start.time());
+	}
+	
+	public Date endTime() {
+	    return new Date(end.time());
+	}
+	  
+	public void setCallCost(BigDecimal callCost) {
+	  	this.callCost = callCost;
+	}
   
 	public String durationMinutes() {
 		int duration = durationSeconds();
@@ -74,5 +74,4 @@ public class Call {
 	public int hashCode() {
 		return start.hashCode() + end.hashCode() + callCost.hashCode();
 	}
-	
 }

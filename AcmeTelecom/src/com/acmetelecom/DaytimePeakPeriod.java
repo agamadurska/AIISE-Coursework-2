@@ -3,6 +3,9 @@ package com.acmetelecom;
 import java.util.Calendar;
 import java.util.Date;
 
+/**
+ * Class dealing with the peak time period during the day.
+ */
 class DaytimePeakPeriod {
 	
 	private final long peakStart;
@@ -56,10 +59,7 @@ class DaytimePeakPeriod {
     /**
     * @return peak end hours
     */
-
     public long getPeakEndHours() {
         return peakEnd;
     }
-
-
 }
