@@ -7,6 +7,10 @@ import com.acmetelecom.customer.Customer;
 import com.acmetelecom.entity.Phone;
 import com.acmetelecom.entity.PhoneEntity;
 
+/**
+ * Implementation of the CallsLogger, relying on a simple list of all the
+ * relevant events.
+ */
 public class SimpleCallsLogger implements CallsLogger {
 
 	// Stores all the call start and end events.
